@@ -17,7 +17,7 @@ const MIN_LP: u64 = 1000; //why 1000?
 const EZeroAmount: u64 = 0;
 const ENotAllow: u64 = 1;
 
-//todo why 18446744073709551615?
+//todo why 18446744073709551615? u64的最大值？
 const MAX_POOL_VALUE: u64 = {
     18446744073709551615 / 10000
 };
@@ -160,6 +160,8 @@ public(package) fun swap_x_to_y<CoinIn, CoinOut>(pool: &mut Pool<CoinIn, CoinOut
     let output_amount = get_amount_out(in_value - lp_fee, reserve_in, reserve_out);
     balance::join(&mut pool.reserve_x, in_balance);
 
+    // //zeros: min_out 是用户期望的最小输出数量，如果实际输出数量小于min_out，则交易失败
+    // assert!(output_amount >= min_out, ELessThanMin); //EHaveSlippage 在调用该函数的地方处理了
 
     events::emit_swap_event<CoinIn, CoinOut>(
         tx_context::sender(ctx),
@@ -191,6 +193,8 @@ public(package) fun swap_y_to_x<CoinIn, CoinOut>(pool: &mut Pool<CoinOut, CoinIn
     let output_amount = get_amount_out(in_value - lp_fee, reserve_in, reserve_out);
     balance::join(&mut pool.reserve_y, in_balance);
 
+    // //zeros: min_out 是用户期望的最小输出数量，如果实际输出数量小于min_out，则交易失败
+    // assert!(output_amount >= min_out, ELessThanMin); //EHaveSlippage 在调用该函数的地方处理了
 
     events::emit_swap_event<CoinIn, CoinOut>(
         tx_context::sender(ctx),

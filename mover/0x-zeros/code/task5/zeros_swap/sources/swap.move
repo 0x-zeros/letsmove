@@ -62,12 +62,12 @@ public entry fun remove_liquidity<X, Y>(
 
     let lp_real = coin::split(&mut lp_in, lp_amount, ctx);
 
-    let (coin_c, coin_y, x_removed, y_removed) = pool::remove_liquidity(pool, lp_real, min_x, min_y, ctx);
+    let (coin_x, coin_y, x_removed, y_removed) = pool::remove_liquidity(pool, lp_real, min_x, min_y, ctx);
 
     assert!(x_removed >= min_x && y_removed >= min_y, EHaveSlippage);
     let sender = tx_context::sender(ctx);
     transfer::public_transfer(lp_in, sender);
-    transfer::public_transfer(coin_c, sender);
+    transfer::public_transfer(coin_x, sender);
     transfer::public_transfer(coin_y, sender);
 }
 
